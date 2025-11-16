@@ -51,7 +51,7 @@ print(result)
 ### Via API
 
 ```bash
-# Iniciar servidor
+# Iniciar server
 uvicorn main:app --reload
 
 # Fazer requisição
