@@ -1,6 +1,7 @@
 # Core dependencies - pinned to wheel-compatible versions
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
+gunicorn==22.0.0
 pydantic==2.5.2
 python-multipart==0.0.6
 
