@@ -2,11 +2,8 @@
 Servidor FastAPI principal para o CutPlanner
 """
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 import uvicorn
 import sys
 import os
@@ -17,9 +14,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from cutplanner import CutPlanner
 from cutplanner.models import OptimizationRequest, OptimizationResult
 from cutplanner.utils import CutPlannerReporter, CutPlannerVisualizer
-import json
 import tempfile
-import base64
 from pathlib import Path
 
 # Configuração do FastAPI
@@ -40,19 +35,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configuração de templates e arquivos estáticos
-web_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "web")
-templates = Jinja2Templates(directory=os.path.join(web_dir, "templates"))
-app.mount("/static", StaticFiles(directory=os.path.join(web_dir, "static")), name="static")
-
 # Instância global do CutPlanner
 cut_planner = CutPlanner()
 
 
-@app.get("/", response_class=HTMLResponse)
-async def root(request: Request):
-    """Página inicial da API"""
-    return templates.TemplateResponse("index.html", {"request": request})
+@app.get("/")
+async def root():
+    """Página inicial da API - redireciona para documentação"""
+    return {
+        "message": "CutPlanner API",
+        "version": "1.0.0",
+        "docs": "/docs",
+        "health": "/health"
+    }
 
 
 @app.get("/health")

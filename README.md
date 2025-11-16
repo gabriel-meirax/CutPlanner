@@ -1,140 +1,141 @@
-# CutPlanner - Sistema de Otimização de Cortes para Serralherias
+# CutPlanner - Sistema de Otimização de Cortes (Next.js)
 
-## Visão Geral
+Sistema inteligente de otimização de cortes para serralherias com interface moderna em Next.js.
 
-O CutPlanner é um sistema inteligente que otimiza o corte de materiais (barras, chapas, perfis) para serralherias, reduzindo desperdícios e maximizando o aproveitamento do material.
+## 🚀 Instalação e Execução
 
-## Funcionalidades
+### Pré-requisitos
 
-- **Otimização 1D**: Para barras e perfis lineares
-- **Otimização 2D**: Para chapas e placas
-- **Consideração de espessura de corte**: Perda da serra incluída nos cálculos
-- **Múltiplos algoritmos**: First Fit, Best Fit, Genetic Algorithm
-- **Relatórios detalhados**: Aproveitamento, sobras, ordem de cortes
-- **API REST**: Para integração com sistemas SaaS
-- **Interface Web**: Interface amigável para uso direto
+- Node.js 18+ instalado
+- Python 3.8+ instalado
+- npm ou yarn
 
-## Instalação
+### Passo 1: Instalar dependências
 
+**Backend Python:**
 ```bash
 pip install -r requirements.txt
 ```
 
-## Uso Rápido
-
-### Via Python
-
-```python
-from cutplanner import CutPlanner
-
-# Configurar o planejador
-planner = CutPlanner(kerf_width=3.0)  # 3mm de espessura de corte
-
-# Definir materiais disponíveis
-materials = [
-    {"id": "barra1", "length": 6000, "quantity": 5},  # 5 barras de 6m
-    {"id": "barra2", "length": 4000, "quantity": 3}   # 3 barras de 4m
-]
-
-# Definir peças a cortar
-parts = [
-    {"id": "peça1", "length": 1200, "quantity": 10},
-    {"id": "peça2", "length": 800, "quantity": 15},
-    {"id": "peça3", "length": 600, "quantity": 20}
-]
-
-# Calcular plano de corte
-result = planner.optimize_1d(materials, parts)
-print(result)
+**Frontend Next.js:**
+```bash
+npm install
 ```
 
-### Via API
+### Passo 2: Iniciar o backend Python
+
+Em um terminal, inicie o servidor Python:
 
 ```bash
-# Iniciar server
-uvicorn main:app --reload
-
-# Fazer requisição
-curl -X POST "http://localhost:8000/optimize/1d" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "materials": [...],
-    "parts": [...],
-    "kerf_width": 3.0
-  }'
+python run.py api
 ```
 
-## Estrutura do Projeto
+O servidor Python estará rodando em `http://localhost:8000`
 
-```
-CutPlanner/
-├── cutplanner/           # Biblioteca principal
-│   ├── __init__.py
-│   ├── core.py          # Algoritmos de otimização
-│   ├── models.py        # Modelos de dados
-│   └── utils.py         # Utilitários
-├── api/                  # API REST
-│   ├── __init__.py
-│   ├── main.py          # Servidor FastAPI
-│   └── routes.py        # Rotas da API
-├── web/                  # Interface web
-│   ├── templates/
-│   └── static/
-├── tests/                # Testes unitários
-└── examples/             # Exemplos de uso
+### Passo 3: Iniciar o Next.js
+
+Em outro terminal, inicie o servidor Next.js:
+
+```bash
+npm run dev
 ```
 
-## Algoritmos Implementados
+O aplicativo estará disponível em `http://localhost:3000`
 
-### 1D (Barras/Perfis)
+## 📁 Estrutura do Projeto
 
-- **First Fit**: Primeira barra que cabe
-- **Best Fit**: Melhor aproveitamento por barra
-- **Genetic Algorithm**: Otimização evolutiva
-
-### 2D (Chapas)
-
-- **Guillotine Cut**: Cortes ortogonais
-- **MaxRects**: Algoritmo de retângulos máximos
-- **Skyline**: Algoritmo de linha do horizonte
-
-## Formato de Saída
-
-### JSON (API)
-
-```json
-{
-  "efficiency": 94.5,
-  "total_waste": 156.0,
-  "cuts": [
-    {
-      "material_id": "barra1",
-      "cuts": [
-        { "part_id": "peça1", "position": 0, "length": 1200 },
-        { "part_id": "peça2", "position": 1203, "length": 800 }
-      ],
-      "waste": 23.0
-    }
-  ],
-  "leftovers": [{ "length": 156, "usable": true }]
-}
+```
+CutPlannerCursor/
+├── app/                    # Next.js App Router
+│   ├── api/               # API Routes (proxy para Python)
+│   ├── layout.tsx         # Layout principal
+│   ├── page.tsx           # Página inicial
+│   └── globals.css        # Estilos globais
+├── components/            # Componentes React
+│   ├── HeroSection.tsx
+│   ├── FeaturesSection.tsx
+│   ├── FormSection.tsx
+│   ├── ResultsSection.tsx
+│   └── Footer.tsx
+├── types/                 # Tipos TypeScript
+│   └── index.ts
+├── api/                   # Backend Python (FastAPI)
+│   └── main.py
+├── cutplanner/           # Biblioteca Python
+│   ├── core.py
+│   ├── models.py
+│   └── utils.py
+├── package.json          # Dependências Node.js
+├── requirements.txt      # Dependências Python
+└── run.py               # Script para iniciar backend
 ```
 
-### Tabela (Interface Web)
+## 🔧 Configuração
 
-- Lista de cortes por material
-- Posições e dimensões das peças
-- Sobras e aproveitamento
-- Ordem de execução
+### Variáveis de Ambiente
 
-## Contribuição
+Crie um arquivo `.env.local` na raiz do projeto (opcional):
 
-1. Fork o projeto
-2. Crie uma branch para sua feature
-3. Commit suas mudanças
-4. Push para a branch
-5. Abra um Pull Request
+```env
+PYTHON_API_URL=http://localhost:8000
+```
 
-## Licença
+Se o backend Python estiver em outra porta ou URL, ajuste esta variável.
+
+## 🎯 Funcionalidades
+
+- ✅ Interface moderna com Next.js e React
+- ✅ Otimização 1D (barras e perfis)
+- ✅ Otimização 2D (chapas e placas)
+- ✅ Múltiplos algoritmos de otimização
+- ✅ Visualização de resultados
+- ✅ Geração de relatórios
+- ✅ Design responsivo com Tailwind CSS
+
+## 📝 Scripts Disponíveis
+
+**Next.js:**
+- `npm run dev` - Inicia o servidor de desenvolvimento
+- `npm run build` - Cria build de produção
+- `npm run start` - Inicia o servidor de produção
+- `npm run lint` - Executa o linter
+
+**Python:**
+- `python run.py api` - Inicia o servidor da API
+
+## 🔄 Como Funciona
+
+1. O frontend Next.js faz requisições para `/api/optimize/[type]`
+2. As API routes do Next.js fazem proxy para o backend Python em `http://localhost:8000`
+3. O backend Python processa a otimização e retorna os resultados
+4. O frontend exibe os resultados de forma interativa
+
+## 🐛 Troubleshooting
+
+### Erro: "Cannot connect to Python backend"
+
+- Certifique-se de que o backend Python está rodando em `http://localhost:8000`
+- Verifique se a porta 8000 não está sendo usada por outro processo
+- Verifique a variável de ambiente `PYTHON_API_URL` no `.env.local`
+
+### Erro: "Module not found"
+
+- Execute `npm install` novamente
+- Delete a pasta `node_modules` e `.next`, depois execute `npm install`
+
+### Porta 3000 já em uso
+
+- O Next.js tentará usar a próxima porta disponível automaticamente
+- Ou defina uma porta customizada: `PORT=3001 npm run dev`
+
+## 📚 Documentação Adicional
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [TypeScript](https://www.typescriptlang.org/docs/)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+
+## 📄 Licença
 
 MIT License - veja o arquivo LICENSE para detalhes.
+
