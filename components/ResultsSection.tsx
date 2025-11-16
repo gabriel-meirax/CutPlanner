@@ -99,7 +99,7 @@ export default function ResultsSection({ result, onReset }: ResultsSectionProps)
                     <ul className="list-disc list-inside mt-2 space-y-1">
                       {materialCut.cuts?.map((cut, cutIndex) => (
                         <li key={cutIndex}>
-                          {cut.part_name} - {cut.length}mm (pos: {cut.position_x || cut.position || 0}mm)
+                          {cut.part_name} - {cut.length}mm (pos: {cut.position_x || 0}mm)
                         </li>
                       ))}
                     </ul>
