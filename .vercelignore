@@ -1,0 +1,20 @@
+# Arquivos que não devem ser enviados ao Vercel
+__tests__/
+__mocks__/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+jest.config.js
+jest.setup.js
+api/
+cutplanner/
+requirements.txt
+run.py
+*.py
+__pycache__/
+*.pyc
+.pytest_cache/
+coverage/
+.nyc_output/
+
