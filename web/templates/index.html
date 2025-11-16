@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CutPlanner - Otimização de Cortes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 0;
+        }
+        .feature-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        .form-section {
+            background-color: #f8f9fa;
+            padding: 40px 0;
+        }
+        .result-section {
+            background-color: white;
+            padding: 40px 0;
+        }
+        .material-row, .part-row {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #dee2e6;
+        }
+        .efficiency-badge {
+            font-size: 0.9em;
+            padding: 5px 10px;
+        }
+        .cut-visualization {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            background-color: #f8f9fa;
+        }
+        .loading {
+            display: none;
+        }
+        .alert-custom {
+            border-radius: 10px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-4">
+                        <i class="fas fa-cut me-3"></i>CutPlanner
+                    </h1>
+                    <p class="lead mb-4">
+                        Sistema inteligente de otimização de cortes para serralherias. 
+                        Reduza desperdícios e maximize o aproveitamento do material.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <button class="btn btn-light btn-lg" onclick="scrollToForm()">
+                            <i class="fas fa-play me-2"></i>Começar Agora
+                        </button>
+                        <a href="#features" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-info-circle me-2"></i>Saiba Mais
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <i class="fas fa-cogs fa-8x opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Funcionalidades Principais</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-ruler-combined fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Otimização 1D</h5>
+                            <p class="card-text">Para barras, perfis e materiais lineares com algoritmos avançados.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-square fa-3x text-success mb-3"></i>
+                            <h5 class="card-title">Otimização 2D</h5>
+                            <p class="card-text">Para chapas e placas com algoritmos de empacotamento inteligente.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-line fa-3x text-warning mb-3"></i>
+                            <h5 class="card-title">Relatórios Detalhados</h5>
+                            <p class="card-text">Análises completas com visualizações e métricas de eficiência.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Form Section -->
+    <section id="form" class="form-section">
+        <div class="container">
+            <h2 class="text-center mb-5">Configurar Otimização</h2>
+            
+            <!-- Tipo de Otimização -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-cog me-2"></i>Tipo de Otimização
+                            </h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="optimizationType" id="type1d" value="1d" checked>
+                                <label class="form-check-label" for="type1d">
+                                    <strong>1D - Barras/Perfis</strong><br>
+                                    <small class="text-muted">Para materiais lineares como barras de aço, perfis de alumínio</small>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="optimizationType" id="type2d" value="2d">
+                                <label class="form-check-label" for="type2d">
+                                    <strong>2D - Chapas/Placas</strong><br>
+                                    <small class="text-muted">Para chapas de aço, placas de madeira, etc.</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-sliders-h me-2"></i>Configurações
+                            </h5>
+                            <div class="mb-3">
+                                <label for="kerfWidth" class="form-label">Espessura do Corte (mm)</label>
+                                <input type="number" class="form-control" id="kerfWidth" value="3.0" min="0" step="0.1">
+                                <div class="form-text">Perda da serra durante o corte</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="algorithm" class="form-label">Algoritmo</label>
+                                <select class="form-select" id="algorithm">
+                                    <option value="best_fit">Best Fit (Recomendado)</option>
+                                    <option value="first_fit">First Fit</option>
+                                    <option value="genetic">Algoritmo Genético</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Materiais -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-boxes me-2"></i>Materiais Disponíveis
+                    </h5>
+                    <div id="materialsContainer">
+                        <div class="material-row">
+                            <div class="row align-items-center">
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" placeholder="ID do Material" name="materialId">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" placeholder="Nome" name="materialName">
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" class="form-control" placeholder="Comprimento (mm)" name="materialLength">
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" class="form-control" placeholder="Quantidade" name="materialQuantity" value="1">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeMaterial(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary" onclick="addMaterial()">
+                        <i class="fas fa-plus me-2"></i>Adicionar Material
+                    </button>
+                </div>
+            </div>
+
+            <!-- Peças -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-puzzle-piece me-2"></i>Peças a Cortar
+                    </h5>
+                    <div id="partsContainer">
+                        <div class="part-row">
+                            <div class="row align-items-center">
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" placeholder="ID da Peça" name="partId">
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" placeholder="Nome" name="partName">
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" class="form-control" placeholder="Comprimento (mm)" name="partLength">
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" class="form-control" placeholder="Quantidade" name="partQuantity" value="1">
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select" name="partPriority">
+                                        <option value="1">Prioridade 1</option>
+                                        <option value="2">Prioridade 2</option>
+                                        <option value="3">Prioridade 3</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removePart(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary" onclick="addPart()">
+                        <i class="fas fa-plus me-2"></i>Adicionar Peça
+                    </button>
+                </div>
+            </div>
+
+            <!-- Botão de Otimização -->
+            <div class="text-center">
+                <button type="button" class="btn btn-primary btn-lg" id="optimizeBtn">
+                    <i class="fas fa-magic me-2"></i>Executar Otimização
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading Section -->
+    <div id="loadingSection" class="loading text-center py-5">
+        <div class="container">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <h4 class="mt-3">Processando Otimização...</h4>
+            <p class="text-muted">Isso pode levar alguns segundos dependendo da complexidade</p>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="resultsSection" class="result-section loading">
+        <div class="container">
+            <h2 class="text-center mb-5">Resultados da Otimização</h2>
+            
+            <!-- Resumo -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-primary" id="efficiencyValue">0%</h3>
+                            <p class="card-text">Eficiência</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-warning" id="wasteValue">0 mm</h3>
+                            <p class="card-text">Desperdício</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-success" id="materialsUsedValue">0</h3>
+                            <p class="card-text">Materiais</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-info" id="processingTimeValue">0 ms</h3>
+                            <p class="card-text">Tempo</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalhes dos Cortes -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-cut me-2"></i>Detalhes dos Cortes
+                    </h5>
+                    <div id="cutsDetails"></div>
+                </div>
+            </div>
+
+            <!-- Retalhos -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-recycle me-2"></i>Retalhos Utilizáveis
+                    </h5>
+                    <div id="leftoversDetails"></div>
+                </div>
+            </div>
+
+            <!-- Ordem de Execução -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-list-ol me-2"></i>Ordem de Execução
+                    </h5>
+                    <div id="executionOrder"></div>
+                </div>
+            </div>
+
+            <!-- Ações -->
+            <div class="text-center">
+                <button type="button" class="btn btn-success me-2" onclick="downloadReport()">
+                    <i class="fas fa-download me-2"></i>Baixar Relatório
+                </button>
+                <button type="button" class="btn btn-info me-2" onclick="createVisualization()">
+                    <i class="fas fa-chart-bar me-2"></i>Criar Visualização
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                    <i class="fas fa-redo me-2"></i>Nova Otimização
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container text-center">
+            <p>&copy; 2024 CutPlanner. Sistema de Otimização de Cortes para Serralherias.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let optimizationResult = null;
+        let isDisplayingResults = false;
+
+        function scrollToForm() {
+            document.getElementById('form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function addMaterial() {
+            console.log('Adicionando material...');
+            const container = document.getElementById('materialsContainer');
+            
+            // Verificar se já existe uma linha vazia
+            const existingRows = container.querySelectorAll('.material-row');
+            const hasEmptyRow = Array.from(existingRows).some(row => {
+                const id = row.querySelector('[name="materialId"]').value;
+                const name = row.querySelector('[name="materialName"]').value;
+                const length = row.querySelector('[name="materialLength"]').value;
+                return !id && !name && !length;
+            });
+            
+            if (hasEmptyRow) {
+                console.log('Já existe uma linha vazia, não adicionando nova');
+                return;
+            }
+            
+            const newRow = document.createElement('div');
+            newRow.className = 'material-row';
+            newRow.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" placeholder="ID do Material" name="materialId">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" placeholder="Nome" name="materialName">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" placeholder="Comprimento (mm)" name="materialLength">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" placeholder="Quantidade" name="materialQuantity" value="1">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeMaterial(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newRow);
+            console.log('Material adicionado. Total de materiais:', container.children.length);
+        }
+
+        function removeMaterial(button) {
+            console.log('Removendo material...');
+            const row = button.closest('.material-row');
+            if (row) {
+                row.remove();
+                console.log('Material removido. Total restante:', document.getElementById('materialsContainer').children.length);
+            } else {
+                console.log('Erro: linha de material não encontrada');
+            }
+        }
+
+        function addPart() {
+            console.log('Adicionando peça...');
+            const container = document.getElementById('partsContainer');
+            
+            // Verificar se já existe uma linha vazia
+            const existingRows = container.querySelectorAll('.part-row');
+            const hasEmptyRow = Array.from(existingRows).some(row => {
+                const id = row.querySelector('[name="partId"]').value;
+                const name = row.querySelector('[name="partName"]').value;
+                const length = row.querySelector('[name="partLength"]').value;
+                return !id && !name && !length;
+            });
+            
+            if (hasEmptyRow) {
+                console.log('Já existe uma linha vazia, não adicionando nova');
+                return;
+            }
+            
+            const newRow = document.createElement('div');
+            newRow.className = 'part-row';
+            newRow.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" placeholder="ID da Peça" name="partId">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" placeholder="Nome" name="partName">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" placeholder="Comprimento (mm)" name="partLength">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" placeholder="Quantidade" name="partQuantity" value="1">
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" name="partPriority">
+                            <option value="1">Prioridade 1</option>
+                            <option value="2">Prioridade 2</option>
+                            <option value="3">Prioridade 3</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removePart(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newRow);
+            console.log('Peça adicionada. Total de peças:', container.children.length);
+        }
+
+        function removePart(button) {
+            console.log('Removendo peça...');
+            const row = button.closest('.part-row');
+            if (row) {
+                row.remove();
+                console.log('Peça removida. Total restante:', document.getElementById('partsContainer').children.length);
+            } else {
+                console.log('Erro: linha de peça não encontrada');
+            }
+        }
+
+        function collectFormData() {
+            console.log('Coletando dados do formulário...');
+            
+            const optimizationType = document.querySelector('input[name="optimizationType"]:checked').value;
+            const kerfWidth = parseFloat(document.getElementById('kerfWidth').value);
+            const algorithm = document.getElementById('algorithm').value;
+
+            // Coletar materiais
+            const materials = [];
+            const materialRows = document.querySelectorAll('.material-row');
+            console.log('Encontradas linhas de materiais:', materialRows.length);
+            
+            materialRows.forEach((row, index) => {
+                const id = row.querySelector('[name="materialId"]').value;
+                const name = row.querySelector('[name="materialName"]').value;
+                const length = parseFloat(row.querySelector('[name="materialLength"]').value);
+                const quantity = parseInt(row.querySelector('[name="materialQuantity"]').value);
+
+                console.log(`Material ${index + 1}:`, { id, name, length, quantity });
+
+                if (id && name && length && quantity) {
+                    materials.push({
+                        id: id,
+                        name: name,
+                        material_type: optimizationType === '1d' ? 'bar' : 'sheet',
+                        length: length,
+                        width: optimizationType === '2d' ? 1000 : null, // Largura padrão para 2D
+                        quantity: quantity
+                    });
+                }
+            });
+
+            // Coletar peças
+            const parts = [];
+            const partRows = document.querySelectorAll('.part-row');
+            console.log('Encontradas linhas de peças:', partRows.length);
+            
+            partRows.forEach((row, index) => {
+                const id = row.querySelector('[name="partId"]').value;
+                const name = row.querySelector('[name="partName"]').value;
+                const length = parseFloat(row.querySelector('[name="partLength"]').value);
+                const quantity = parseInt(row.querySelector('[name="partQuantity"]').value);
+                const priority = parseInt(row.querySelector('[name="partPriority"]').value);
+
+                console.log(`Peça ${index + 1}:`, { id, name, length, quantity, priority });
+
+                if (id && name && length && quantity) {
+                    parts.push({
+                        id: id,
+                        name: name,
+                        part_type: optimizationType === '1d' ? 'linear' : 'rectangular',
+                        length: length,
+                        width: optimizationType === '2d' ? 500 : null, // Largura padrão para 2D
+                        quantity: quantity,
+                        priority: priority
+                    });
+                }
+            });
+
+            const result = {
+                materials: materials,
+                parts: parts,
+                kerf_width: kerfWidth,
+                algorithm: algorithm
+            };
+            
+            // Verificar se há duplicação
+            const materialIds = materials.map(m => m.id);
+            const partIds = parts.map(p => p.id);
+            
+            if (new Set(materialIds).size !== materialIds.length) {
+                console.warn('ATENÇÃO: Materiais com IDs duplicados detectados!');
+            }
+            
+            if (new Set(partIds).size !== partIds.length) {
+                console.warn('ATENÇÃO: Peças com IDs duplicados detectadas!');
+            }
+            
+            console.log('Dados coletados:', result);
+            return result;
+        }
+
+        let isOptimizing = false;
+        let lastOptimizationTime = 0;
+        
+        async function runOptimization() {
+            const now = Date.now();
+            if (isOptimizing) {
+                console.log('Otimização já em andamento...');
+                return;
+            }
+            
+            // Proteção contra cliques muito rápidos (menos de 1 segundo)
+            if (now - lastOptimizationTime < 1000) {
+                console.log('Muitos cliques muito rápidos, ignorando...');
+                return;
+            }
+            
+            isOptimizing = true;
+            lastOptimizationTime = now;
+            console.log('Iniciando otimização...');
+            
+            const formData = collectFormData();
+            console.log('Dados do formulário:', formData);
+            
+            if (formData.materials.length === 0 || formData.parts.length === 0) {
+                alert('Por favor, adicione pelo menos um material e uma peça.');
+                isOptimizing = false;
+                return;
+            }
+
+            // Desabilitar botão e mostrar loading
+            const optimizeBtn = document.getElementById('optimizeBtn');
+            optimizeBtn.disabled = true;
+            optimizeBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processando...';
+            
+            document.getElementById('loadingSection').classList.remove('loading');
+            document.getElementById('resultsSection').classList.add('loading');
+
+            try {
+                const optimizationType = document.querySelector('input[name="optimizationType"]:checked').value;
+                const endpoint = `/optimize/${optimizationType}`;
+                
+                console.log('Enviando requisição para:', endpoint);
+                console.log('Dados enviados:', formData);
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('Resposta recebida:', result);
+                
+                optimizationResult = result;
+                displayResults(result);
+
+            } catch (error) {
+                console.error('Erro na otimização:', error);
+                alert('Erro ao executar otimização: ' + error.message);
+                isOptimizing = false;
+                isDisplayingResults = false;
+            } finally {
+                // Esconder loading e reabilitar botão
+                document.getElementById('loadingSection').classList.add('loading');
+                document.getElementById('resultsSection').classList.remove('loading');
+                
+                const optimizeBtn = document.getElementById('optimizeBtn');
+                optimizeBtn.disabled = false;
+                optimizeBtn.innerHTML = '<i class="fas fa-magic me-2"></i>Executar Otimização';
+                
+                isOptimizing = false;
+                isDisplayingResults = false;
+            }
+        }
+
+        function displayResults(result) {
+            if (isDisplayingResults) {
+                console.log('Já exibindo resultados, ignorando chamada...');
+                return;
+            }
+            
+            isDisplayingResults = true;
+            console.log('Exibindo resultados:', result);
+            
+            // Verificar se o resultado é válido
+            if (!result || !result.cuts) {
+                console.error('Resultado inválido:', result);
+                isDisplayingResults = false;
+                return;
+            }
+            
+            // Atualizar métricas
+            document.getElementById('efficiencyValue').textContent = result.efficiency.toFixed(1) + '%';
+            document.getElementById('wasteValue').textContent = result.total_waste.toFixed(1) + ' mm';
+            document.getElementById('materialsUsedValue').textContent = result.materials_used;
+            document.getElementById('processingTimeValue').textContent = result.processing_time.toFixed(1) + ' ms';
+
+            // Detalhes dos cortes
+            const cutsContainer = document.getElementById('cutsDetails');
+            console.log('Limpando container de cortes e adicionando', result.cuts.length, 'cortes');
+            
+            // Verificar se o container existe
+            if (!cutsContainer) {
+                console.error('Container de cortes não encontrado!');
+                return;
+            }
+            
+            // Limpar container de forma mais robusta
+            while (cutsContainer.firstChild) {
+                cutsContainer.removeChild(cutsContainer.firstChild);
+            }
+            
+            console.log('Container limpo, adicionando', result.cuts.length, 'cortes');
+
+            result.cuts.forEach((materialCut, index) => {
+                const cutDiv = document.createElement('div');
+                cutDiv.className = 'mb-3 p-3 border rounded';
+                cutDiv.innerHTML = `
+                    <h6 class="text-primary">${materialCut.material_name}</h6>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <span class="badge bg-success">Eficiência: ${materialCut.efficiency.toFixed(1)}%</span>
+                        </div>
+                        <div class="col-md-3">
+                            <span class="badge bg-warning">Desperdício: ${materialCut.waste.toFixed(1)}mm</span>
+                        </div>
+                        <div class="col-md-3">
+                            <span class="badge bg-info">Peças: ${materialCut.cuts.length}</span>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <strong>Peças cortadas:</strong>
+                        <ul class="list-unstyled mt-1">
+                            ${materialCut.cuts.map(cut => `
+                                <li><i class="fas fa-cut me-2"></i>${cut.part_name} - ${cut.length}mm (pos: ${cut.position_x}mm)</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+                cutsContainer.appendChild(cutDiv);
+            });
+
+            // Retalhos
+            const leftoversContainer = document.getElementById('leftoversDetails');
+            console.log('Processando retalhos:', result.leftovers ? result.leftovers.length : 0);
+            
+            // Verificar se o container existe
+            if (!leftoversContainer) {
+                console.error('Container de retalhos não encontrado!');
+                return;
+            }
+            
+            // Limpar container de forma mais robusta
+            while (leftoversContainer.firstChild) {
+                leftoversContainer.removeChild(leftoversContainer.firstChild);
+            }
+            
+            if (result.leftovers && result.leftovers.length > 0) {
+                const usableLeftovers = result.leftovers.filter(l => l.usable);
+                if (usableLeftovers.length > 0) {
+                    leftoversContainer.innerHTML = `
+                        <div class="alert alert-success">
+                            <h6><i class="fas fa-recycle me-2"></i>Retalhos Utilizáveis</h6>
+                            <ul class="list-unstyled mb-0">
+                                ${usableLeftovers.map(leftover => `
+                                    <li><i class="fas fa-arrow-right me-2"></i>${leftover.length.toFixed(1)}mm (Material: ${leftover.material_id})</li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    leftoversContainer.innerHTML = '<p class="text-muted">Nenhum retalho utilizável encontrado.</p>';
+                }
+            } else {
+                leftoversContainer.innerHTML = '<p class="text-muted">Nenhum retalho encontrado.</p>';
+            }
+
+            // Ordem de execução
+            const executionContainer = document.getElementById('executionOrder');
+            console.log('Processando ordem de execução:', result.execution_order ? result.execution_order.length : 0);
+            
+            // Verificar se o container existe
+            if (!executionContainer) {
+                console.error('Container de ordem de execução não encontrado!');
+                return;
+            }
+            
+            // Limpar container de forma mais robusta
+            while (executionContainer.firstChild) {
+                executionContainer.removeChild(executionContainer.firstChild);
+            }
+            
+            if (result.execution_order && result.execution_order.length > 0) {
+                executionContainer.innerHTML = `
+                    <ol class="list-group list-group-numbered">
+                        ${result.execution_order.map(step => `
+                            <li class="list-group-item">${step}</li>
+                        `).join('')}
+                    </ol>
+                `;
+            } else {
+                executionContainer.innerHTML = '<p class="text-muted">Ordem de execução não disponível.</p>';
+            }
+            
+            // Redefinir flag
+            isDisplayingResults = false;
+            console.log('Exibição de resultados concluída');
+        }
+
+        async function downloadReport() {
+            if (!optimizationResult) {
+                alert('Execute uma otimização primeiro.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/report/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(optimizationResult)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const reportData = await response.json();
+                
+                // Criar e baixar relatório HTML
+                const blob = new Blob([reportData.results.html], { type: 'text/html' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'relatorio_cutplanner.html';
+                a.click();
+                window.URL.revokeObjectURL(url);
+
+            } catch (error) {
+                console.error('Erro ao gerar relatório:', error);
+                alert('Erro ao gerar relatório: ' + error.message);
+            }
+        }
+
+        async function createVisualization() {
+            if (!optimizationResult) {
+                alert('Execute uma otimização primeiro.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/visualization/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(optimizationResult)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const vizData = await response.json();
+                alert('Visualizações criadas com sucesso! Verifique o console para mais detalhes.');
+                console.log('Visualizações:', vizData);
+
+            } catch (error) {
+                console.error('Erro ao criar visualização:', error);
+                alert('Erro ao criar visualização: ' + error.message);
+            }
+        }
+
+        function resetForm() {
+            console.log('Resetando formulário...');
+            
+            // Limpar formulário de forma mais robusta
+            const materialsContainer = document.getElementById('materialsContainer');
+            const partsContainer = document.getElementById('partsContainer');
+            
+            while (materialsContainer.firstChild) {
+                materialsContainer.removeChild(materialsContainer.firstChild);
+            }
+            
+            while (partsContainer.firstChild) {
+                partsContainer.removeChild(partsContainer.firstChild);
+            }
+            
+            // Adicionar uma linha vazia para cada
+            addMaterial();
+            addPart();
+            
+            // Resetar valores
+            document.getElementById('kerfWidth').value = '3.0';
+            document.getElementById('algorithm').value = 'best_fit';
+            
+            // Esconder resultados
+            document.getElementById('resultsSection').classList.add('loading');
+            
+            // Scroll para o topo
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            console.log('Formulário resetado');
+        }
+
+        // Carregar exemplos
+        async function loadExample(type) {
+            try {
+                const response = await fetch(`/examples/${type}`);
+                const exampleData = await response.json();
+                
+                // Preencher formulário com dados do exemplo
+                // Implementar preenchimento automático aqui
+                
+            } catch (error) {
+                console.error('Erro ao carregar exemplo:', error);
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Página carregada, inicializando...');
+            
+            // Limpar containers primeiro de forma mais robusta
+            const materialsContainer = document.getElementById('materialsContainer');
+            const partsContainer = document.getElementById('partsContainer');
+            
+            while (materialsContainer.firstChild) {
+                materialsContainer.removeChild(materialsContainer.firstChild);
+            }
+            
+            while (partsContainer.firstChild) {
+                partsContainer.removeChild(partsContainer.firstChild);
+            }
+            
+            // Adicionar primeira linha de material e peça
+            addMaterial();
+            addPart();
+            
+            // Adicionar evento de clique ao botão de otimização
+            const optimizeBtn = document.getElementById('optimizeBtn');
+            optimizeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Botão de otimização clicado');
+                runOptimization();
+            });
+            
+            console.log('Inicialização concluída');
+        });
+    </script>
+</body>
+</html> 

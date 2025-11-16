@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste CutPlanner</title>
+    <style>
+        .loading { display: none; }
+        .material-row, .part-row { 
+            border: 1px solid #ccc; 
+            padding: 10px; 
+            margin: 5px 0; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Teste CutPlanner</h1>
+    
+    <div id="materialsContainer">
+        <div class="material-row">
+            <input type="text" placeholder="ID do Material" name="materialId" value="barra1">
+            <input type="text" placeholder="Nome" name="materialName" value="Barra de Aço 6m">
+            <input type="number" placeholder="Comprimento (mm)" name="materialLength" value="6000">
+            <input type="number" placeholder="Quantidade" name="materialQuantity" value="2">
+            <button onclick="removeMaterial(this)">Remover</button>
+        </div>
+    </div>
+    
+    <button onclick="addMaterial()">Adicionar Material</button>
+    
+    <div id="partsContainer">
+        <div class="part-row">
+            <input type="text" placeholder="ID da Peça" name="partId" value="peça1">
+            <input type="text" placeholder="Nome" name="partName" value="Viga Principal">
+            <input type="number" placeholder="Comprimento (mm)" name="partLength" value="1200">
+            <input type="number" placeholder="Quantidade" name="partQuantity" value="4">
+            <select name="partPriority">
+                <option value="1">Prioridade 1</option>
+                <option value="2">Prioridade 2</option>
+                <option value="3">Prioridade 3</option>
+            </select>
+            <button onclick="removePart(this)">Remover</button>
+        </div>
+    </div>
+    
+    <button onclick="addPart()">Adicionar Peça</button>
+    
+    <hr>
+    
+    <button onclick="testCollectData()">Testar Coleta de Dados</button>
+    <button onclick="resetForm()">Resetar Formulário</button>
+    
+    <div id="output"></div>
+    
+    <script>
+        function addMaterial() {
+            console.log('Adicionando material...');
+            const container = document.getElementById('materialsContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'material-row';
+            newRow.innerHTML = `
+                <input type="text" placeholder="ID do Material" name="materialId">
+                <input type="text" placeholder="Nome" name="materialName">
+                <input type="number" placeholder="Comprimento (mm)" name="materialLength">
+                <input type="number" placeholder="Quantidade" name="materialQuantity" value="1">
+                <button onclick="removeMaterial(this)">Remover</button>
+            `;
+            container.appendChild(newRow);
+            console.log('Material adicionado. Total:', container.children.length);
+        }
+        
+        function removeMaterial(button) {
+            button.closest('.material-row').remove();
+        }
+        
+        function addPart() {
+            console.log('Adicionando peça...');
+            const container = document.getElementById('partsContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'part-row';
+            newRow.innerHTML = `
+                <input type="text" placeholder="ID da Peça" name="partId">
+                <input type="text" placeholder="Nome" name="partName">
+                <input type="number" placeholder="Comprimento (mm)" name="partLength">
+                <input type="number" placeholder="Quantidade" name="partQuantity" value="1">
+                <select name="partPriority">
+                    <option value="1">Prioridade 1</option>
+                    <option value="2">Prioridade 2</option>
+                    <option value="3">Prioridade 3</option>
+                </select>
+                <button onclick="removePart(this)">Remover</button>
+            `;
+            container.appendChild(newRow);
+            console.log('Peça adicionada. Total:', container.children.length);
+        }
+        
+        function removePart(button) {
+            button.closest('.part-row').remove();
+        }
+        
+        function collectFormData() {
+            console.log('Coletando dados...');
+            
+            const materials = [];
+            const materialRows = document.querySelectorAll('.material-row');
+            console.log('Materiais encontrados:', materialRows.length);
+            
+            materialRows.forEach((row, index) => {
+                const id = row.querySelector('[name="materialId"]').value;
+                const name = row.querySelector('[name="materialName"]').value;
+                const length = parseFloat(row.querySelector('[name="materialLength"]').value);
+                const quantity = parseInt(row.querySelector('[name="materialQuantity"]').value);
+                
+                console.log(`Material ${index + 1}:`, { id, name, length, quantity });
+                
+                if (id && name && length && quantity) {
+                    materials.push({ id, name, length, quantity });
+                }
+            });
+            
+            const parts = [];
+            const partRows = document.querySelectorAll('.part-row');
+            console.log('Peças encontradas:', partRows.length);
+            
+            partRows.forEach((row, index) => {
+                const id = row.querySelector('[name="partId"]').value;
+                const name = row.querySelector('[name="partName"]').value;
+                const length = parseFloat(row.querySelector('[name="partLength"]').value);
+                const quantity = parseInt(row.querySelector('[name="partQuantity"]').value);
+                const priority = parseInt(row.querySelector('[name="partPriority"]').value);
+                
+                console.log(`Peça ${index + 1}:`, { id, name, length, quantity, priority });
+                
+                if (id && name && length && quantity) {
+                    parts.push({ id, name, length, quantity, priority });
+                }
+            });
+            
+            const result = { materials, parts };
+            console.log('Dados coletados:', result);
+            return result;
+        }
+        
+        function testCollectData() {
+            const data = collectFormData();
+            document.getElementById('output').innerHTML = `
+                <h3>Dados Coletados:</h3>
+                <p><strong>Materiais:</strong> ${data.materials.length}</p>
+                <p><strong>Peças:</strong> ${data.parts.length}</p>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+        }
+        
+        function resetForm() {
+            console.log('Resetando formulário...');
+            document.getElementById('materialsContainer').innerHTML = '';
+            document.getElementById('partsContainer').innerHTML = '';
+            addMaterial();
+            addPart();
+            document.getElementById('output').innerHTML = '';
+            console.log('Formulário resetado');
+        }
+        
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Página carregada');
+        });
+    </script>
+</body>
+</html>

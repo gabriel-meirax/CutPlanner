@@ -1,0 +1,24 @@
+{
+  "materials": [
+    {
+      "id": "barra1",
+      "name": "Barra de Aço 6m",
+      "material_type": "bar",
+      "length": 6000,
+      "quantity": 2,
+      "cost_per_unit": 150.0
+    }
+  ],
+  "parts": [
+    {
+      "id": "peça1",
+      "name": "Viga Principal",
+      "part_type": "linear",
+      "length": 1200,
+      "quantity": 4,
+      "priority": 1
+    }
+  ],
+  "kerf_width": 3.0,
+  "algorithm": "best_fit"
+}
