@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: cutplanner-api
+    runtime: python
+    runtimeVersion: 3.11
+    startCommand: >
+      pip install --upgrade pip setuptools wheel &&
+      pip install --no-cache-dir -r requirements.txt &&
+      python run.py api
+    buildCommand: >
+      pip install --upgrade pip setuptools wheel &&
+      pip install --no-cache-dir -r requirements.txt
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
+      - key: PORT
+        value: 8000
+    healthCheckPath: /health
+    healthCheckInterval: 15

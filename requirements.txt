@@ -1,9 +1,21 @@
+# Core dependencies - pinned to wheel-compatible versions
 fastapi==0.104.1
-uvicorn==0.24.0
-pydantic==2.5.0
-numpy==1.24.3
-pandas==2.0.3
-matplotlib==3.7.2
-seaborn==0.12.2
+uvicorn[standard]==0.24.0
+pydantic==2.5.2
+python-multipart==0.0.6
+
+# Data processing - newer versions with better wheel support
+numpy==1.26.3
+pandas==2.1.4
+
+# Visualization (keep matplotlib but use pre-built wheel compatible version)
+matplotlib==3.8.2
+seaborn==0.13.0
+
+# Templating
 jinja2==3.1.2
-python-multipart==0.0.6 
+
+# Build dependencies
+setuptools>=70.0.0
+wheel>=0.43.0
+pip>=23.3.0
